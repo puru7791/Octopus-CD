@@ -32,7 +32,10 @@ jobs:
       ProjectName: ${{ github.event.inputs.ProjectName }}
       octopus_url: ${{ github.event.inputs.octopus_url }}
       # Runs a set of commands using the runners shell
+    secrets: inherit
   Get-the-Data:
+    needs: 
+      - export-project-variable
     runs-on: ubuntu-latest
     steps:
       - name: Get the data
