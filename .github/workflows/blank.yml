@@ -5,13 +5,23 @@ name: CI
 # Controls when the workflow will run
 on:
   # Triggers the workflow on push or pull request events but only for the "main" branch
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+  # push:
+  #   branches: [ "main" ]
+  # pull_request:
+  #   branches: [ "main" ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+    inputs: 
+      ProjectName: 
+        type: string
+        required: true
+        description: 'Octopus VariableSet Name'
+      octopus_url:
+        type: string
+        required: true
+        #default: ""
+
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -26,11 +36,13 @@ jobs:
       - uses: actions/checkout@v4
 
       # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
+      - name: Export project variables
+        with: 
+          ProjectName: ${{ github.event.inputs.ProjectName }}
+          octopus_url: ${{ github.event.inputs.octopus_url }}
+        uses: puru7791/Octopus-Deploy\.github\workflows\exportOctopusProjectVariables.yaml@main
 
       # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
+      - name: Get the Data 
         run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+          cat ${{ github.event.inputs.ProjectName }}/${{ github.event.inputs.ProjectName }}-vars.json
